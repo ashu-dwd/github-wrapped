@@ -1,7 +1,8 @@
 import OpenAI from "openai";
 
 const openai = new OpenAI({
-  apiKey: process.env.GEMINI_API_KEY,
+  apiKey:
+    process.env.GEMINI_API_KEY || "AIzaSyDCJsL6gRCu75g3aykpBz06VZYIckycaVE",
   baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
 });
 
@@ -9,6 +10,8 @@ export const generateGeminiResponse = async (
   userGithubData: string,
   SYSTEM_PROMPT: string
 ) => {
+  // console.log("userGithubData", userGithubData);
+  // console.log("SYSTEM_PROMPT", SYSTEM_PROMPT);
   const response = await openai.chat.completions.create({
     model: "gemini-2.5-flash",
     messages: [
