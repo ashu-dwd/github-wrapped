@@ -431,7 +431,7 @@ const WrappedPage = () => {
       </div>
 
       {/* Main content */}
-      <div className="relative z-10 w-full max-w-4xl">
+      <div className="relative z-10 w-full max-w-4xl mx-auto px-4">
         {/* Card display with modern animations */}
         <div className="flex items-center justify-center mb-8 w-full h-[60vh] sm:h-[65vh] md:h-[70vh] lg:h-[75vh]">
           <AnimatePresence mode="wait">
@@ -439,7 +439,7 @@ const WrappedPage = () => {
               key={currentCardIndex}
               className="w-full h-full flex items-center justify-center"
               initial={{ opacity: 0, x: 300, scale: 0.8 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
+              animate={{ opacity: 1, x: 0, scale: 0.9 }}
               exit={{ opacity: 0, x: -300, scale: 0.8 }}
               transition={{
                 duration: 0.5,
@@ -448,7 +448,9 @@ const WrappedPage = () => {
                 damping: 30,
               }}
             >
-              {cards[currentCardIndex]}
+              <div className="w-full h-full flex items-center justify-center">
+                {cards[currentCardIndex]}
+              </div>
             </motion.div>
           </AnimatePresence>
         </div>

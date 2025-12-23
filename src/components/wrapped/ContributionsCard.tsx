@@ -132,7 +132,7 @@ export const ContributionsCard = ({ productivity }: ContributionsCardProps) => {
             hidden: { opacity: 0, scale: 0.8 },
             visible: { opacity: 1, scale: 1, transition: { delay: 0.7 } }
           }}
-          className="bg-white/5 backdrop-blur-sm border border-white/10 p-4 rounded-2xl overflow-x-auto"
+          className="bg-white/5 backdrop-blur-sm border border-white/10 p-4 rounded-2xl overflow-auto max-h-[36vh] min-h-[80px]"
         >
           <div className="flex gap-1 min-w-max">
             {/* Day labels */}

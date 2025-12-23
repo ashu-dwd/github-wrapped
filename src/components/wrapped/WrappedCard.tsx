@@ -105,13 +105,13 @@ export const WrappedCard = ({
   };
 
   return (
-    <div className="relative group">
+    <div className="relative group w-full h-full flex items-center justify-center">
       <motion.div
         ref={cardRef}
         className={cn(
           "wrapped-card",
           gradientClass,
-          "flex flex-col items-center justify-center p-8 text-white shadow-2xl border border-white/20",
+          "flex flex-col items-center justify-center p-4 sm:p-6 md:p-8 text-white shadow-2xl border border-white/20",
           className
         )}
         variants={cardVariants}

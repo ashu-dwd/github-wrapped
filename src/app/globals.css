@@ -128,9 +128,18 @@
 @layer utilities {
   /* Modern Card System */
   .wrapped-card {
-    max-height: 100%;
-    max-width: 100%;
-    height: auto;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+    height: 100%;
     width: auto;
     aspect-ratio: 9 / 16;
     position: relative;

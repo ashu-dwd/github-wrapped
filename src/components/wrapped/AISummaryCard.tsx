@@ -66,7 +66,7 @@ export const AISummaryCard = ({ summary, year }: AISummaryCardProps) => {
       animationDelay={0.8}
     >
       <motion.div
-        className="w-full h-full flex flex-col items-center justify-center gap-8 p-6"
+        className="w-auto h-auto flex flex-col items-center justify-center gap-8 "
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -74,7 +74,7 @@ export const AISummaryCard = ({ summary, year }: AISummaryCardProps) => {
         {/* Modern header with animated icons */}
         <motion.div variants={itemVariants} className="text-center space-y-4">
           <motion.div
-            className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full border border-white/20"
+            className="inline-flex items-center gap-1 bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full border border-white/20"
             whileHover={{ scale: 1.05 }}
           >
             <motion.div
@@ -115,7 +115,7 @@ export const AISummaryCard = ({ summary, year }: AISummaryCardProps) => {
         {/* AI summary text with modern design */}
         <motion.div variants={itemVariants} className="w-full max-w-lg">
           <motion.div
-            className="bg-white/10 backdrop-blur-sm border border-white/20 p-6 rounded-2xl relative overflow-hidden"
+            className="bg-white/10 backdrop-blur-sm border border-white/20 p-4 sm:p-6 rounded-2xl relative overflow-y-auto max-h-[18vh] min-h-[64px]"
             whileHover={{ scale: 1.02 }}
           >
             {/* Floating decorative elements */}
@@ -147,7 +147,7 @@ export const AISummaryCard = ({ summary, year }: AISummaryCardProps) => {
             </motion.div>
 
             {/* Summary text */}
-            <p className="text-lg sm:text-xl leading-relaxed text-center font-medium text-white relative z-10">
+            <p className="text-lg sm:text-xl leading-relaxed text-center font-medium text-white relative z-10 break-words whitespace-pre-line overflow-x-hidden">
               {displayedText}
               {isTyping && (
                 <motion.span
