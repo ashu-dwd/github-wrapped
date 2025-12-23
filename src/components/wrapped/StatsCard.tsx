@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { WrappedCard } from "./WrappedCard";
 import { useEffect, useState } from "react";
 import {
@@ -8,6 +9,7 @@ import {
   GitCommit,
   FolderGit,
   Star,
+  TrendingUp,
 } from "lucide-react";
 import type { YearStats } from "@/types/github-wrapped";
 
@@ -16,7 +18,7 @@ interface StatsCardProps {
 }
 
 /**
- * Stats card with sharp black and white design
+ * Modern stats card with beautiful animations and colorful gradient
  */
 export const StatsCard = ({ stats }: StatsCardProps) => {
   const [animatedStats, setAnimatedStats] = useState({
@@ -26,7 +28,7 @@ export const StatsCard = ({ stats }: StatsCardProps) => {
     repos: 0,
   });
 
-  // animating numbers counting up
+  // Modern number counting animation
   useEffect(() => {
     const duration = 2000;
     const steps = 60;
@@ -36,12 +38,13 @@ export const StatsCard = ({ stats }: StatsCardProps) => {
     const timer = setInterval(() => {
       currentStep++;
       const progress = currentStep / steps;
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
 
       setAnimatedStats({
-        commits: Math.floor(stats.totalCommits * progress),
-        prs: Math.floor(stats.totalPRs * progress),
-        issues: Math.floor(stats.totalIssues * progress),
-        repos: Math.floor(stats.totalReposCreated * progress),
+        commits: Math.floor(stats.totalCommits * easeOutQuart),
+        prs: Math.floor(stats.totalPRs * easeOutQuart),
+        issues: Math.floor(stats.totalIssues * easeOutQuart),
+        repos: Math.floor(stats.totalReposCreated * easeOutQuart),
       });
 
       if (currentStep >= steps) {
@@ -63,75 +66,156 @@ export const StatsCard = ({ stats }: StatsCardProps) => {
       icon: GitCommit,
       label: "Commits",
       value: animatedStats.commits,
+      color: "from-blue-400 to-blue-600",
     },
     {
       icon: GitPullRequest,
       label: "Pull Requests",
       value: animatedStats.prs,
+      color: "from-green-400 to-green-600",
     },
     {
       icon: Activity,
       label: "Issues",
       value: animatedStats.issues,
+      color: "from-purple-400 to-purple-600",
     },
     {
       icon: FolderGit,
       label: "Repositories",
       value: animatedStats.repos,
+      color: "from-orange-400 to-orange-600",
     },
   ];
 
-  return (
-    <WrappedCard cardName="stats" gradientClass="gradient-stats">
-      <div className="w-full h-full flex flex-col items-center justify-center gap-10 p-8">
-        <div className="text-center space-y-3 animate-fade-in border-b-4 border-black pb-6">
-          <h2 className="text-5xl font-black text-black uppercase tracking-tighter">
-            Stats
-          </h2>
-          <p className="text-black/70 text-lg font-bold uppercase tracking-wide">
-            Your Year in Numbers
-          </p>
-        </div>
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.3,
+      },
+    },
+  };
 
-        <div className="grid grid-cols-2 gap-4 w-full max-w-md">
+  const itemVariants = {
+    hidden: { opacity: 0, scale: 0.8, y: 20 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: {
+        type: "spring" as const,
+        stiffness: 100,
+        damping: 10,
+      },
+    },
+  };
+
+  return (
+    <WrappedCard cardName="stats" gradientClass="gradient-stats" animationDelay={0.2}>
+      <motion.div
+        className="w-full h-full flex flex-col items-center justify-center gap-8 p-6"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        {/* Modern header */}
+        <motion.div variants={itemVariants} className="text-center space-y-4">
+          <motion.div
+            className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full border border-white/20"
+            whileHover={{ scale: 1.05 }}
+          >
+            <TrendingUp className="w-6 h-6 text-white" />
+            <h2 className="text-3xl sm:text-4xl font-bold text-white">
+              Year in Review
+            </h2>
+          </motion.div>
+          <p className="text-white/80 text-lg font-medium">
+            Your amazing contribution metrics
+          </p>
+        </motion.div>
+
+        {/* Stats grid with modern cards */}
+        <div className="grid grid-cols-2 gap-4 w-full max-w-lg">
           {statItems.map((item, index) => (
-            <div
+            <motion.div
               key={item.label}
-              className="glass-card bg-white/10 backdrop-blur-sm border-2 border-black p-6 hover-lift animate-scale-in border-sharp"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              variants={itemVariants}
+              whileHover={{ scale: 1.05, y: -4 }}
+              whileTap={{ scale: 0.95 }}
+              className="relative"
             >
-              <div className="flex flex-col items-center gap-4">
-                <item.icon
-                  className="w-10 h-10 text-black stroke-current"
-                  strokeWidth={2.5}
-                />
-                <div className="text-center">
-                  <p className="text-5xl font-black animate-counter text-black">
-                    {item.value.toLocaleString()}
-                  </p>
-                  <p className="text-xs font-bold text-black/70 mt-2 uppercase tracking-wider">
-                    {item.label}
-                  </p>
+              <motion.div
+                className={`absolute inset-0 bg-gradient-to-br ${item.color} rounded-2xl opacity-20 blur-xl`}
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  delay: index * 0.5,
+                  ease: "easeInOut",
+                }}
+              />
+              <div className="relative bg-white/10 backdrop-blur-sm border border-white/20 p-6 rounded-2xl hover:bg-white/20 transition-colors">
+                <div className="flex flex-col items-center gap-4">
+                  <motion.div
+                    className={`p-3 bg-gradient-to-br ${item.color} rounded-xl shadow-lg`}
+                    whileHover={{ rotate: 360 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <item.icon className="w-6 h-6 text-white" strokeWidth={2} />
+                  </motion.div>
+                  <div className="text-center">
+                    <motion.p 
+                      className="text-3xl sm:text-4xl font-bold text-white tabular-nums"
+                      key={animatedStats[item.label.toLowerCase() as keyof typeof animatedStats]}
+                      initial={{ scale: 0.5, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ type: "spring" as const, stiffness: 200 }}
+                    >
+                      {item.value.toLocaleString()}
+                    </motion.p>
+                    <p className="text-xs font-medium text-white/70 mt-1 uppercase tracking-wider">
+                      {item.label}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
+        {/* Contribution highlight */}
         {stats.contributionDays > 0 && (
-          <div className="border-2 border-black px-8 py-3 animate-slide-up border-sharp bg-black">
-            <div className="flex items-center gap-3">
-              <Star
-                className="w-6 h-6 text-white stroke-current"
-                fill="white"
-              />
-              <p className="text-lg font-black text-white uppercase tracking-wide">
-                {stats.contributionDays} Days Active
-              </p>
-            </div>
-          </div>
+          <motion.div
+            variants={itemVariants}
+            className="w-full max-w-sm"
+          >
+            <motion.div
+              className="bg-white/10 backdrop-blur-sm border border-white/20 p-4 rounded-2xl flex items-center gap-4"
+              whileHover={{ scale: 1.02, x: 10 }}
+              transition={{ type: "spring" as const, stiffness: 300 }}
+            >
+              <motion.div
+                className="p-3 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl"
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 4, repeat: Infinity }}
+              >
+                <Star className="w-6 h-6 text-white" fill="white" />
+              </motion.div>
+              <div className="flex-1">
+                <p className="text-white/70 text-sm font-medium uppercase tracking-wider">
+                  Active Days
+                </p>
+                <p className="text-2xl font-bold text-white">
+                  {stats.contributionDays} days
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
     </WrappedCard>
   );
 };

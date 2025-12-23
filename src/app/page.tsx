@@ -1,122 +1,344 @@
 "use client";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Github, Sparkles } from "lucide-react";
+import { useState, useMemo, KeyboardEvent } from "react";
+import {
+  Github,
+  Sparkles,
+  Rocket,
+  BarChart3,
+  Heart,
+  Users,
+  Zap,
+} from "lucide-react";
 
 export default function Home() {
   const [username, setUsername] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const router = useRouter();
 
-  const handleUserName = () => {
+  // Generate random values once per component lifecycle
+  const floatingParticles = useMemo(() => {
+    // Use fixed values for SSR consistency
+    return [...Array(15)].map((_, i) => ({
+      id: i,
+      x: Math.random() * 100, // percentage
+      y: Math.random() * 100, // percentage
+      duration: 3 + Math.random() * 2,
+      delay: Math.random() * 2,
+    }));
+  }, []);
+
+  const handleGenerateWrapped = async () => {
     if (!username.trim()) return;
 
     setIsLoading(true);
+    // Simulate processing for better UX
+    await new Promise((resolve) => setTimeout(resolve, 800));
     router.push(`/github-wrapped/?u=${username.trim()}`);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      handleUserName();
+      handleGenerateWrapped();
     }
   };
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setCursorPosition({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
+  const features = [
+    {
+      icon: BarChart3,
+      title: "Detailed Stats",
+      description: "Your year in numbers",
+    },
+    {
+      icon: Sparkles,
+      title: "AI Summary",
+      description: "Personalized insights",
+    },
+    {
+      icon: Users,
+      title: "Collaborations",
+      description: "Team contributions",
+    },
+    {
+      icon: Zap,
+      title: "Growth Metrics",
+      description: "Track your progress",
+    },
+    {
+      icon: Heart,
+      title: "Milestones",
+      description: "Achievement badges",
+    },
+    {
+      icon: Rocket,
+      title: "Share Results",
+      description: "Show off your work",
+    },
+  ];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black px-4 relative overflow-hidden">
-      {/* Sharp geometric background patterns */}
+    <div
+      className="min-h-screen bg-black text-white relative overflow-hidden flex flex-col"
+      onMouseMove={handleMouseMove}
+    >
+      {/* Modern animated background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-1 bg-white animate-pulse" />
-        <div
-          className="absolute bottom-0 right-0 w-1 h-full bg-white animate-pulse"
-          style={{ animationDelay: "0.5s" }}
+        {/* Cursor-reactive light */}
+        <motion.div
+          className="absolute w-80 h-80 rounded-full bg-white/5 blur-3xl -translate-x-1/2 -translate-y-1/2"
+          style={{
+            left: cursorPosition.x || "50%",
+            top: cursorPosition.y || "50%",
+          }}
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0.15, 0.3, 0.15],
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
         />
-        <div
-          className="absolute top-1/4 left-1/4 w-64 h-64 border-2 border-white/10 animate-pulse"
-          style={{ animationDelay: "1s" }}
+
+        {/* Subtle orbs */}
+        <motion.div
+          className="absolute top-10 left-10 w-64 h-64 bg-white/5 rounded-full blur-3xl"
+          animate={{
+            x: [0, 20, 0],
+            y: [0, -20, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
         />
-        <div
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 border border-white/5 animate-pulse"
-          style={{ animationDelay: "1.5s" }}
+        <motion.div
+          className="absolute bottom-10 right-10 w-64 h-64 bg-white/5 rounded-full blur-3xl"
+          animate={{
+            x: [0, -20, 0],
+            y: [0, 20, 0],
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
         />
+
+        {/* Floating particles */}
+        {floatingParticles.map((particle) => (
+          <motion.div
+            key={particle.id}
+            className="absolute w-1 h-1 bg-white/25 rounded-full"
+            style={{
+              left: `${particle.x}%`,
+              top: `${particle.y}%`,
+            }}
+            animate={{
+              y: [null, -5, null],
+              opacity: [0, 1, 0],
+            }}
+            transition={{
+              duration: particle.duration,
+              repeat: Infinity,
+              delay: particle.delay,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
       </div>
 
-      <Card className="w-full max-w-md shadow-2xl relative z-10 border-2 border-white bg-black backdrop-blur-md border-sharp">
-        <CardHeader className="text-center space-y-6 pb-6 border-b-2 border-white">
-          <div className="flex items-center justify-center gap-3 animate-fade-in">
-            <Github className="w-12 h-12 text-white" />
-          </div>
-
-          <div className="space-y-3 animate-slide-up">
-            <CardTitle className="text-5xl font-black text-white tracking-tighter uppercase">
-              GitHub
-              <br />
-              Wrapped
-            </CardTitle>
-            <CardDescription className="text-white text-base font-medium uppercase tracking-wide">
-              {new Date().getFullYear()} Edition
-            </CardDescription>
-          </div>
-        </CardHeader>
-
-        <CardContent className="space-y-6 pt-6">
-          <div
-            className="space-y-4 animate-slide-up"
-            style={{ animationDelay: "0.1s" }}
+      {/* Main content */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 py-8">
+        <motion.div
+          className="w-full max-w-6xl mx-auto text-center space-y-12"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, type: "spring" }}
+        >
+          {/* Header with animated logo */}
+          <motion.div
+            className="space-y-8 flex flex-col items-center"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
           >
-            <Input
-              placeholder="GITHUB USERNAME"
-              className="h-14 text-base bg-white text-black placeholder:text-gray-500 border-2 border-black hover:border-gray-800 focus:border-gray-600 transition-colors border-sharp font-semibold uppercase tracking-wide"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              onKeyPress={handleKeyPress}
-              disabled={isLoading}
-            />
-
-            <Button
-              className="w-full h-14 text-base bg-white text-black hover:bg-gray-200 border-2 border-white font-black shadow-lg hover-lift border-sharp uppercase tracking-wider transition-all"
-              onClick={handleUserName}
-              disabled={!username.trim() || isLoading}
+            <motion.div
+              className="inline-flex items-center justify-center gap-4"
+              whileHover={{ scale: 1.05 }}
             >
-              {isLoading ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-black border-t-transparent animate-spin mr-2 border-sharp" />
-                  LOADING...
-                </>
-              ) : (
-                <>SEE YOUR WRAPPED</>
-              )}
-            </Button>
-          </div>
+              <motion.div
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+              >
+                <Github className="w-16 h-16 text-white" strokeWidth={1.5} />
+              </motion.div>
+            </motion.div>
 
-          <div
-            className="space-y-3 pt-6 border-t-2 border-white/20 animate-slide-up"
-            style={{ animationDelay: "0.2s" }}
-          >
-            <div className="grid grid-cols-3 gap-3 text-center">
-              <div className="border border-white/20 p-3 border-sharp hover:bg-white/5 transition-colors">
-                <p className="text-white text-xs font-bold uppercase">
-                  AI Summary
-                </p>
-              </div>
-              <div className="border border-white/20 p-3 border-sharp hover:bg-white/5 transition-colors">
-                <p className="text-white text-xs font-bold uppercase">Stats</p>
-              </div>
-              <div className="border border-white/20 p-3 border-sharp hover:bg-white/5 transition-colors">
-                <p className="text-white text-xs font-bold uppercase">Share</p>
-              </div>
+            <div className="space-y-4">
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tight">
+                GitHub
+                <motion.span
+                  className="block bg-gradient-to-r from-white via-neutral-400 to-white bg-clip-text text-transparent"
+                  animate={{ scale: [1, 1.02, 1] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                >
+                  Wrapped
+                </motion.span>
+              </h1>
+              <p className="text-xl sm:text-2xl text-white/80 font-medium">
+                Discover your {new Date().getFullYear()} GitHub journey
+              </p>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </motion.div>
+
+          {/* Input section */}
+          <motion.div
+            className="w-full max-w-md mx-auto space-y-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+          >
+            <div className="relative">
+              <motion.div
+                className="absolute -inset-1 bg-gradient-to-r from-white/40 via-neutral-500/40 to-white/40 rounded-2xl opacity-40 blur-sm"
+                animate={{ opacity: [0.3, 0.6, 0.3] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              />
+              <Input
+                placeholder="Enter your GitHub username"
+                className="relative h-16 text-lg bg-white/5 backdrop-blur-md text-white placeholder:text-white/50 border border-white/30 focus:border-white transition-all duration-300 rounded-2xl font-semibold px-6"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                onKeyDown={handleKeyPress}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+                disabled={isLoading}
+              />
+              {isFocused && (
+                <motion.div
+                  className="absolute right-4 top-1/2 -translate-y-1/2"
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                >
+                  <motion.div
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <Sparkles className="w-5 h-5 text-white/60" />
+                  </motion.div>
+                </motion.div>
+              )}
+            </div>
+
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button
+                className="w-full h-16 text-lg bg-white text-black hover:bg-neutral-200 font-bold rounded-2xl shadow-2xl border border-white/10 transition-all duration-300 flex items-center gap-3"
+                onClick={handleGenerateWrapped}
+                disabled={!username.trim() || isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <motion.div
+                      className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                    />
+                    Generating Your Wrapped...
+                  </>
+                ) : (
+                  <>
+                    <motion.div
+                      animate={{ x: [0, 6, 0] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      <Rocket className="w-5 h-5 text-black" />
+                    </motion.div>
+                    Generate My Wrapped
+                  </>
+                )}
+              </Button>
+            </motion.div>
+          </motion.div>
+
+          {/* Features grid */}
+          <motion.div
+            className="w-full max-w-5xl mx-auto"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.6 }}
+          >
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+              {features.map((feature, index) => (
+                <motion.div
+                  key={feature.title}
+                  className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl sm:rounded-2xl p-3 sm:p-4 text-center hover:bg-white/10 transition-all duration-300 overflow-hidden"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.8 + index * 0.1, duration: 0.5 }}
+                  whileHover={{
+                    scale: 1.05,
+                    backgroundColor: "rgba(255,255,255,0.15)",
+                    y: -5,
+                    transition: { duration: 0.2 },
+                  }}
+                >
+                  <motion.div
+                    className="flex flex-col items-center gap-2 sm:gap-3 min-h-0"
+                    whileHover={{ y: -2 }}
+                  >
+                    <motion.div
+                      className={`p-2 sm:p-3 bg-gradient-to-br ${
+                        index % 2 === 0
+                          ? "from-white to-neutral-500"
+                          : "from-neutral-700 to-black"
+                      } rounded-lg sm:rounded-xl shadow-lg flex-shrink-0`}
+                      whileHover={{
+                        rotate: [0, 10, -10, 0],
+                        scale: 1.1,
+                        transition: { duration: 0.6 },
+                      }}
+                    >
+                      <feature.icon
+                        className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+                        strokeWidth={2}
+                      />
+                    </motion.div>
+                    <div className="flex flex-col gap-1 min-w-0 w-full">
+                      <h3 className="text-white font-semibold text-xs sm:text-sm mb-0 sm:mb-1 break-words">
+                        {feature.title}
+                      </h3>
+                      <p className="text-white/60 text-[10px] sm:text-xs break-words leading-tight">
+                        {feature.description}
+                      </p>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 }
