@@ -9,6 +9,8 @@ export const generateGeminiResponse = async (
   userGithubData: string,
   SYSTEM_PROMPT: string
 ) => {
+  // console.log("userGithubData", userGithubData);
+  // console.log("SYSTEM_PROMPT", SYSTEM_PROMPT);
   const response = await openai.chat.completions.create({
     model: "gemini-2.5-flash",
     messages: [
