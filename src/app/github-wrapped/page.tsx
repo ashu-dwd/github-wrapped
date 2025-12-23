@@ -29,6 +29,8 @@ import type {
   WrappedAPIResponse,
 } from "@/types/github-wrapped";
 
+import { Suspense } from "react";
+
 const WrappedPage = () => {
   const [wrappedData, setWrappedData] = useState<GitHubWrappedData | null>(
     null
@@ -537,4 +539,11 @@ const WrappedPage = () => {
   );
 };
 
-export default WrappedPage;
+const GithubWrapped = () => (
+  <Suspense>
+    <WrappedPage />
+  </Suspense>
+);
+
+export default GithubWrapped;
+
