@@ -1,0 +1,18 @@
+{
+  "name": "GitHub Wrapped 2025",
+  "short_name": "GitHub Wrapped",
+  "description": "Celebrate your coding journey with beautiful, shareable GitHub stats cards",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    { "src": "/favicon.ico", "sizes": "32x32", "type": "image/x-icon" }
+  ]
+}

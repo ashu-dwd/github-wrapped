@@ -13,25 +13,38 @@ import {
   Heart,
   Users,
   Zap,
+  Code,
 } from "lucide-react";
 
 export default function Home() {
   const [username, setUsername] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const router = useRouter();
 
-  // Generate random values once per component lifecycle
+  // Generate deterministic values for SSR consistency
   const floatingParticles = useMemo(() => {
-    // Use fixed values for SSR consistency
-    return [...Array(15)].map((_, i) => ({
-      id: i,
-      x: Math.random() * 100, // percentage
-      y: Math.random() * 100, // percentage
-      duration: 3 + Math.random() * 2,
-      delay: Math.random() * 2,
-    }));
+    // Use fixed seed-based random for consistent SSR/CSR rendering
+    const seededRandom = (seed: number) => {
+      const x = Math.sin(seed) * 10000;
+      return x - Math.floor(x);
+    };
+
+    return [...Array(15)].map((_, i) => {
+      const seed1 = i * 1.234 + 0.123;
+      const seed2 = i * 5.678 + 0.456;
+      const seed3 = i * 9.012 + 0.789;
+      const seed4 = i * 2.345 + 0.012;
+
+      return {
+        id: i,
+        x: seededRandom(seed1) * 100, // percentage
+        y: seededRandom(seed2) * 100, // percentage
+        duration: 3 + seededRandom(seed3) * 2,
+        delay: seededRandom(seed4) * 2,
+      };
+    });
   }, []);
 
   const handleGenerateWrapped = async () => {
@@ -163,6 +176,39 @@ export default function Home() {
           />
         ))}
       </div>
+
+      {/* Source Code Button - Top Right */}
+      <motion.div
+        className="absolute top-6 right-6 z-20"
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.8, duration: 0.6 }}
+      >
+        <motion.a
+          href="https://github.com/ashu-dwd/github-wrapped" // Update with actual repository URL
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white/90 hover:text-white transition-all duration-300 hover:bg-white/20 hover:border-white/30 hover:shadow-lg hover:shadow-white/20"
+          whileHover={{ scale: 1.05, y: -2 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <motion.div
+            className="relative"
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.6 }}
+          >
+            <Code className="w-4 h-4" strokeWidth={2} />
+          </motion.div>
+          <span className="text-sm font-medium hidden sm:inline">
+            Source Code
+          </span>
+          <motion.div
+            className="w-1 h-1 bg-white/60 rounded-full"
+            animate={{ scale: [1, 1.5, 1], opacity: [0.6, 1, 0.6] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+        </motion.a>
+      </motion.div>
 
       {/* Main content */}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 py-8">
