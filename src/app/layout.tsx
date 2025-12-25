@@ -25,6 +25,13 @@ export const metadata: Metadata = {
     "GitHub Summary",
     "2025",
   ],
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", type: "image/x-icon" },
+    ],
+  },
+  manifest: "/manifest.json",
   openGraph: {
     title: "GitHub Wrapped 2025",
     description:
@@ -46,6 +53,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <link rel="manifest" href="/manifest.json" />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
